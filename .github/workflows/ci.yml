@@ -1,0 +1,14 @@
+name: Editor configurations
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  vim:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y vim lua5.1
+      - name: Check Vim plugin
+        run: vim -Nu NONE -n -es -c 'set rtp+=./vim' -c 'filetype on' -c 'syntax on' -c 'source vim/after/plugin/forge_lsp.vim' -c 'edit sample.fg' -c 'if &filetype !=# "forge" | cquit | endif' -c 'qa!'
+      - name: Check Lua syntax
+        run: find nvim -name '*.lua' -exec luac -p {} +
